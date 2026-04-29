@@ -8,18 +8,21 @@ from wxauto4 import WeChat
 
 class WeChatBot:
     def __init__(self):
-        self.client = OpenAI(api_key= os.getenv("DeepSeek"), base_url="https://api.deepseek.com"  )
-        self.wx = WeChat()
-        print(dir(self.wx))
+        self.client = OpenAI(api_key= os.getenv("DeepSeek"), 
+                             base_url="https://api.deepseek.com"  )
+        # self.wx = WeChat()
+        # print(dir(self.wx))
 
     def __ask(self, question):
         response = self.client.chat.completions.create(
-            model="deepseek-chat",
+            model="deepseek-v4-flash",
             messages=[
                 {"role": "system", "content": "You are a helpful assistant."},
                 {"role": "user", "content": question}
             ],
-            stream=False
+            stream=False,
+            reasoning_effort="high",
+            extra_body={"thinking": {"type": "enabled"}}
         )
         return response.choices[0].message.content.strip()
     
@@ -28,26 +31,26 @@ class WeChatBot:
     def run(self):
         print("Running WeChatBot...")
         target = "文件传输助手"
-        # print(self.__ask("python 和 c++ 哪个更好？"))
-        target = "文件传输助手"
-        self.wx.ChatWith(target)
-        # 查看当前窗口信息
-        chatinfo = self.wx.ChatInfo()
-        print(f"当前窗口信息：{chatinfo}")
+        print(self.__ask("python 和 c++ 哪个更好？"))
+        # target = "文件传输助手"
+        # self.wx.ChatWith(target)
+        # # 查看当前窗口信息
+        # chatinfo = self.wx.ChatInfo()
+        # print(f"当前窗口信息：{chatinfo}")
 
-        # 发送消息
-        if chatinfo.get('chat_name') == target:  # 先判断是否为要发送的人
-            self.wx.SendMsg("你好")
+        # # 发送消息
+        # if chatinfo.get('chat_name') == target:  # 先判断是否为要发送的人
+        #     self.wx.SendMsg("你好")
 
         # 获取当前聊天窗口消息
-        msgs = self.wx.GetAllMessage()
+        # msgs = self.wx.GetAllMessage()
 
         # for msg in msgs:
         #     print(msg.raw)
 
-        sessions = self.wx.GetSession()
-        for session in sessions:
-            print(session.info)
+        # sessions = self.wx.GetSession()
+        # for session in sessions:
+        #     print(session.info)
 
 
 def main():
